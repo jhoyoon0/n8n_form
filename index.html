@@ -19,11 +19,11 @@
     <div class="container">
         <h1>Google Drive 파일 처리 요청</h1>
         <form id="fileIdForm" method="post">
-            <label for="fileId">처리할 Google Drive 파일 ID:</label>
-            <input type="text" id="fileId" name="file_id" placeholder="여기에서 파일 ID를 입력하세요.">
-
             <label for="userName">사용자 이름:</label>
             <input type="text" id="userName" name="user_name" placeholder="사용자 이름을 입력하세요.">
+            
+            <label for="fileId">처리할 Google Drive 파일 ID:</label>
+            <input type="text" id="fileId" name="file_id" placeholder="여기에서 파일 ID를 입력하세요.">
             <input type="submit" value="요청 보내기">
         </form>
         <div id="responseMessage" class="message" style="display:none;"></div>
@@ -51,7 +51,7 @@
                         'Content-Type': 'application/json' // JSON 형식으로 데이터를 보낸다고 명시
                     },
                     // 여기에 추가된 코드 시작
-                    body: JSON.stringify({ file_id: fileId, user_name: userName }) // ID와 사용자 이름을 JSON 형태로 보냅니다.
+                    body: JSON.stringify({ user_name: userName, file_id: fileId }) // ID와 사용자 이름을 JSON 형태로 보냅니다.
                     // 여기에 추가된 코드 끝
                 });
 
