@@ -86,7 +86,7 @@
                         }
 
                         // 'llm_parsed_result' (파싱된 LLM 답변)이 있다면 표시
-                        if (result.['LLM 답변']) {
+                        if (result['LLM 답변']) {
                             messageHtml += `LLM 답변:<div class="json-output">${JSON.stringify(result['LLM 답변'], null, 2)}</div>`;
                         }
                         
