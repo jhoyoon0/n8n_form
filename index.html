@@ -102,10 +102,10 @@
                             let checkDuplicated = result['중복 검수'];
                             
                             if (checkDuplicated['중복 의심 문항']) {
-                                messageHtml += `중복 의심 문항: <div class="json-output">${JSON.stringify(result['중복 검수'], null, 2)}</div><br><br>`;
+                                messageHtml += `중복 의심 문항: <div class="json-output">${JSON.stringify(checkDuplicated['중복 의심 문항'], null, 2)}</div><br><br>`;
                             }
                             
-                            let parsedllmOutput = result['LLM 답변'] ?? result['error_text'];
+                            let parsedllmOutput = checkDuplicated['LLM 답변'] ?? checkDuplicated['error_text'];
                             if (checkDuplicated['LLM 답변']) {
                                 messageHtml += `LLM 답변: <div class="json-output">${JSON.stringify(parsedllmOutput, null, 2)}</div><dr><dr>`;
                             } else {
@@ -114,7 +114,7 @@
                         }
 
                         if (result['review_type'] === '모두' || result['review_type'] === '문항 검수') {
-                        messageHtml += `문항 검증 결과(참고): <div class="json-output">${JSON.stringify(result['로직 검'], null, 2)}</div>`
+                        messageHtml += `문항 검증 결과(참고): <div class="json-output">${JSON.stringify(result['로직 검수'], null, 2)}</div>`
                         }
                         
                         responseMessageDiv.innerHTML = messageHtml;
