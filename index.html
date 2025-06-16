@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>파일 ID 입력</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 50px; background-color: #f4f4f4; }
+        .container { background-color: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); max-width: 500px; margin: auto; }
+        h1 { color: #333; text-align: center; }
+        label { display: block; margin-bottom: 8px; font-weight: bold; }
+        /* input[type="text"]와 select 태그 모두에 적용되도록 수정 */
+        input[type="text"], select { width: calc(100% - 20px); padding: 10px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 4px; }
+        input[type="submit"] { background-color: #007bff; color: white; padding: 12px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; width: 100%; }
+        input[type="submit"]:hover { background-color: #0056b3; }
+        .message { margin-top: 20px; padding: 10px; border-radius: 4px; text-align: center; }
+        .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        /* JSON 출력을 위한 추가 스타일 */
+        .json-output {
+            background-color: #e9ecef;
+            border: 1px solid #ced4da;
+            padding: 10px;
+            margin-top: 10px;
+            text-align: left;
+            white-space: pre-wrap; /* 공백 유지 및 줄바꿈 */
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace; /* 고정폭 글꼴 */
+            font-size: 0.9em;
+            color: #343a40;
+            max-height: 200px; /* 너무 길면 스크롤바 생성 */
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Google Drive 파일 처리 요청</h1>
+        <form id="fileIdForm" method="post">
+            <label for="reviewType">검수 항목:</label>
+            <select id="reviewType" name="review_type">
+                <option value="모두">모두</option>
+                <option value="중복 검수">중복 검수</option>
+                <option value="로직 검수">로직 검수</option>
+            </select>
+
+            <label for="userName">사용자 이름:</label>
+            <input type="text" id="userName" name="user_name" placeholder="사용자 이름을 입력하세요.">
+
+            <label for="fileId">처리할 Google Drive 파일 ID:</label>
+            <input type="text" id="fileId" name="file_id" placeholder="여기에서 파일 ID를 입력하세요.">
+
+            <input type="submit" value="요청 보내기">
+        </form>
+        <div id="responseMessage" class="message" style="display:none;"></div>
+    </div>
+
+    <script>
+        const form = document.getElementById('fileIdForm');
+        const responseMessageDiv = document.getElementById('responseMessage');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault(); // 폼의 기본 제출 동작(페이지 새로고침)을 막습니다.
+
+            // 드롭다운에서 선택된 값 가져오기
+            const reviewType = document.getElementById('reviewType').value;
+            const userName = document.getElementById('userName').value;
+            const fileId = document.getElementById('fileId').value;
+            
+
+            // !!! 여기에 n8n Webhook URL을 붙여넣으세요 !!!
+            const webhookUrl = 'https://n8n.boinit.com/webhook-test/123abc'; 
+
+            // 메시지 초기화 및 숨기기
+            responseMessageDiv.style.display = 'none';
+            responseMessageDiv.textContent = '';
+            responseMessageDiv.className = 'message'; // 클래스 초기화
+
+            try {
+                // n8n Webhook으로 POST 요청을 보냅니다.
+                const response = await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json' // JSON 형식으로 데이터를 보낸다고 명시
+                    },
+                    // 드롭다운 값을 포함하여 JSON 데이터를 전송
+                    body: JSON.stringify({ 
+                        review_type: reviewType, // 새롭게 추가된 필드
+                        user_name: userName, 
+                        file_id: fileId 
+                    }) 
+                });
+
+                if (response.ok) { // HTTP 상태 코드가 200번대인 경우
+                    const result = await response.json(); // n8n Webhook 응답을 JSON으로 파싱
+
+                    // 응답 상태에 따라 메시지 표시
+                    if (result.status === 'success') {
+                        responseMessageDiv.className = 'message success';
+                        let messageHtml = `<strong>'요청이 성공적으로 처리되었습니다!'</strong><br><br>`;
+
+                        // '중복 의심 문항' 결과가 있다면 표시
+                        if (result['중복 의심 문항']) {
+                            messageHtml += `중복 의심 문항: <div class="json-output">${JSON.stringify(result['중복 의심 문항'], null, 2)}</div><br><br>`;
+                        }
+
+                        // 'LLM 답변' (파싱되지 않은 문자열)이 있다면 표시
+                        // n8n에서 파싱된 'llm_parsed_result'를 보내는 것이 더 좋음
+                        if (result['LLM 답변']) {
+                             // LLM 답변 문자열을 클라이언트 측에서 파싱 시도 (n8n에서 파싱하는게 좋음)
+                            let parsedLlmOutput = result['LLM 답변'];
+                            try {
+                                parsedLlmOutput = JSON.parse(result['LLM 답변'].replace(/'/g, '"'));
+                            } catch (e) {
+                                console.warn("Client-side LLM 답변 파싱 실패, 원본 문자열 표시:", result['LLM 답변']);
+                                parsedLlmOutput = result['LLM 답변']; // 파싱 실패 시 원본 문자열 표시
+                            }
+                            messageHtml += `LLM 답변:<div class="json-output">${JSON.stringify(parsedLlmOutput, null, 2)}</div>`;
+                        }
+                        
+                        responseMessageDiv.innerHTML = messageHtml;
+
+                    } else { // n8n 워크플로우에서 'error' 상태를 반환한 경우
+                        responseMessageDiv.className = 'message error';
+                        responseMessageDiv.innerHTML = `<strong>오류 발생:</strong> ${result.message || '알 수 없는 오류가 발생했습니다.'}`;
+                        if (result.detail) { // 세부 오류 메시지가 있다면 표시
+                             responseMessageDiv.innerHTML += `<br>상세: ${result.detail}`;
+                        }
+                    }
+
+                } else { // HTTP 응답 자체에 문제가 있는 경우 (예: 404, 500 등)
+                    const errorText = await response.text(); // 오류 메시지를 텍스트로 가져옴
+                    responseMessageDiv.className = 'message error';
+                    responseMessageDiv.innerHTML = `<strong>네트워크 오류 (${response.status} ${response.statusText}):</strong> 서버 응답을 받을 수 없습니다.<br>
+                                                    <em>${errorText.substring(0, 200)}...</em>`; // 일부만 표시
+                }
+            } catch (error) { // 네트워크 연결 등 예측 못한 오류
+                responseMessageDiv.className = 'message error';
+                responseMessageDiv.textContent = '네트워크 오류가 발생했습니다: ' + error.message;
+            }
+            responseMessageDiv.style.display = 'block'; // 메시지 표시
+        });
+    </script>
+</body>
+</html>
