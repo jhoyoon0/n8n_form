@@ -78,11 +78,11 @@
                     // 응답 상태에 따라 메시지 표시
                     if (result.status === 'success') {
                         responseMessageDiv.className = 'message success';
-                        let messageHtml = `<strong>${result['status'] || '요청이 성공적으로 처리되었습니다!'}</strong><br>`;
+                        let messageHtml = `<strong>'요청이 성공적으로 처리되었습니다!'</strong><br><br>`;
 
                         // '중복 의심 문항' 결과가 있다면 표시
                         if (result['중복 의심 문항']) {
-                            messageHtml += `중복 의심 문항: <em>${result['중복 의심 문항']}</em><br>`;
+                            messageHtml += `중복 의심 문항: <div class="json-output">${JSON.stringify(result['중복 의심 문항'], null, 2)}</div><br><br>`;
                         }
 
                         // 'llm_parsed_result' (파싱된 LLM 답변)이 있다면 표시
