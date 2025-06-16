@@ -86,7 +86,7 @@
                         review_type: reviewType,
                         user_name: userName, 
                         file_id: fileId 
-                    }) 
+                    })
                 });
 
                 if (response.ok) { // HTTP 상태 코드가 200번대인 경우
@@ -110,6 +110,7 @@
                                 messageHtml += `LLM 답변: <div class="json-output">${JSON.stringify(parsedllmOutput, null, 2)}</div><dr><dr>`;
                             } else {
                                 messageHtml += `LLM 답변 Json 형태 변환 실패 원본 출력: <div class="json-output">${JSON.stringify(parsedllmOutput, null, 2)}</div><dr><dr>`;
+                            }
                         }
 
                         if (result['review_type'] === '모두' || result['review_type'] === '문항 검수') {
