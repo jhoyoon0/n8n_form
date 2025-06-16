@@ -78,7 +78,7 @@
                     // 응답 상태에 따라 메시지 표시
                     if (result.status === 'success') {
                         responseMessageDiv.className = 'message success';
-                        let messageHtml = `<strong>${result.message || '요청이 성공적으로 처리되었습니다!'}</strong><br>`;
+                        let messageHtml = `<strong>${result['status'] || '요청이 성공적으로 처리되었습니다!'}</strong><br>`;
 
                         // '중복 의심 문항' 결과가 있다면 표시
                         if (result['중복 의심 문항']) {
