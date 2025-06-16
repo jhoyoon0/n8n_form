@@ -106,9 +106,9 @@
                             
                             let parsedllmOutput = checkDuplicated['LLM 답변'] ?? checkDuplicated['error_text'];
                             if (checkDuplicated['LLM 답변']) {
-                                messageHtml += `LLM 답변: <div class="json-output">${JSON.stringify(parsedllmOutput, null, 2)}</div><dr><dr>`;
+                                messageHtml += `LLM 답변: <div class="json-output">${JSON.stringify(parsedllmOutput, null, 2)}</div><br><br>`;
                             } else {
-                                messageHtml += `LLM 답변 Json 형태 변환 실패 원본 출력: <div class="json-output">${JSON.stringify(parsedllmOutput, null, 2)}</div><dr><dr>`;
+                                messageHtml += `LLM 답변 Json 형태 변환 실패 원본 출력: <div class="json-output">${JSON.stringify(parsedllmOutput, null, 2)}</div><br><br>`;
                             }
                         }
 
