@@ -114,11 +114,13 @@
                                 messageHtml += `중복 의심 문항: <div class="json-output">${JSON.stringify(checkDuplicated['중복 의심 문항'], null, 2)}</div><br><br>`;
                             }
                             
-                            let parsedllmOutput = checkDuplicated['LLM 답변'] ?? checkDuplicated['error_text'];
+                            let parsedllmOutput = checkDuplicated['LLM 답변'] ?? checkDuplicated['error_text'] ?? "-";
                             if (checkDuplicated['LLM 답변']) {
                                 messageHtml += `LLM 답변: <div class="json-output">${JSON.stringify(parsedllmOutput, null, 2)}</div><br><br>`;
                             } else if (checkDuplicated['error_text']) {
                                 messageHtml += `LLM 답변 Json 형태 변환 실패 원본 출력: <div class="json-output">${JSON.stringify(parsedllmOutput, null, 2)}</div><br><br>`;
+                            } else {
+                                messageHtml += `LLM 답변: <div class="json-output">${JSON.stringify(parsedllmOutput, null, 2)}</div><br><br>`
                             }
                         }
 
