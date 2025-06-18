@@ -7,6 +7,8 @@
         .container { background-color: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); max-width: 1000px; margin: auto; }
         h1 { color: #333; text-align: center; }
         label { display: block; margin-bottom: 8px; font-weight: bold; }
+        p { font-size: 14px; color: #666; margin: 0 2px 8px; }
+        code { font-weight: bold; }
         /* input[type="text"]와 select 태그 모두에 적용되도록 수정 */
         input[type="text"], select { width: calc(100% - 20px); padding: 10px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 4px; }
         input[type="submit"] { background-color: #007bff; color: white; padding: 12px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; width: 100%; }
@@ -36,19 +38,22 @@
         <form id="fileIdForm" method="post">
             <label for="reviewType">검수 항목:</label>
             <select id="reviewType" name="review_type">
-                <option value="모두">모두</option>
                 <option value="중복 검수">중복 검수</option>
-                <option value="로직 검수">로직 검수</option>
             </select>
 
             <label for="userName">사용자 이름:</label>
+            <p>예시: 김철수, 한영희</p>
             <input type="text" id="userName" name="user_name" placeholder="사용자 이름을 입력하세요.">
 
             <label for="fileId">처리할 Google Drive 파일 ID:</label>
+            <p>
+                파일 ID는 Google Drive 공유 링크의 <code>/d/</code> 뒤부터 다음 <code>/</code> 앞까지입니다.<br>
+                예시: 파일 공유 링크 - https://drive.google.com/file/d/ <span style="background-color: yellow;">1TOCaKkNUXD464ajDHM-TUnQjta14l</span> /view?usp=drive_link → 형광펜 부분이 바로 파일 ID입니다.
+            </p>
             <input type="text" id="fileId" name="file_id" placeholder="여기에서 파일 ID를 입력하세요.">
 
-            <label for="conditions">문항 검수 시 추가할 특수 조건(e.g. 받아올림 X):</label>
-            <textarea id="conditions" name="conditions" placeholder="여기에서 프롬프트에 추가할 특수 조건을 입력하세요." style="width: calc(100% - 20px); height: 100px; padding: 10px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 4px;"></textarea>
+            <label for="conditions" style="display: none;">문항 검수 시 추가할 특수 조건(e.g. 받아올림 X):</label>
+            <textarea id="conditions" name="conditions" placeholder="여기에서 프롬프트에 추가할 특수 조건을 입력하세요." style="width: calc(100% - 20px); height: 100px; padding: 10px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 4px; display: none;"></textarea>
 
             <input type="submit" value="요청 보내기">
         </form>
